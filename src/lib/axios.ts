@@ -9,7 +9,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('notehub-token');
+  const token = import.meta.env.VITE_NOTEHUB_TOKEN;
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -18,7 +18,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('notehub-token');
+      console.warn('Authentication failed. Check VITE_NOTEHUB_TOKEN.');
     }
     return Promise.reject(error);
   },
