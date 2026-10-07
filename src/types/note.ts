@@ -9,6 +9,6 @@ export interface Note {
 
 export interface NotePayload {
   title: string;
-  content: string;
+  content?: string;
   tag: string;
 }

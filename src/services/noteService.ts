@@ -11,21 +11,21 @@ export async function getNotes(page: number, perPage: number, search = ''): Prom
 }
 
 export async function getNote(id: string): Promise<Note> {
-  const response = await api.get<unknown>(`/notes/${id}`);
+  const response = await api.get<Note>(`/notes/${id}`);
   return normalizeNote(response.data);
 }
 
 export async function createNote(payload: NotePayload): Promise<Note> {
-  const response = await api.post<unknown>('/notes', payload);
+  const response = await api.post<Note>('/notes', payload);
   return normalizeNote(response.data);
 }
 
 export async function updateNote(id: string, payload: NotePayload): Promise<Note> {
-  const response = await api.put<unknown>(`/notes/${id}`, payload);
+  const response = await api.put<Note>(`/notes/${id}`, payload);
   return normalizeNote(response.data);
 }
 
 export async function deleteNote(id: string): Promise<Note> {
-  const response = await api.delete<unknown>(`/notes/${id}`);
+  const response = await api.delete<Note>(`/notes/${id}`);
   return normalizeNote(response.data);
 }

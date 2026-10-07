@@ -1,34 +1,47 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Formik, type FormikHelpers } from 'formik';
 import { toast } from 'react-hot-toast';
 import * as Yup from 'yup';
-import { useCreateNote, useUpdateNote } from '../../hooks/useNotes';
+import { createNote, updateNote } from '../../services/noteService';
 import type { Note, NotePayload } from '../../types/note';
+import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 
 interface NoteFormProps {
   note?: Note;
   onCancel: () => void;
 }
 
+interface FormikValues {
+  title: string;
+  content: string;
+  tag: string;
+}
+
+const tags = ['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'] as const;
+
 const schema = Yup.object({
-  title: Yup.string().trim().min(1, 'Title is required').max(120, 'Title must be at most 120 characters'),
-  content: Yup.string().trim().min(1, 'Content is required').max(5000, 'Content must be at most 5000 characters'),
-  tag: Yup.string().trim().min(1, 'Tag is required').max(40, 'Tag must be at most 40 characters'),
+  title: Yup.string().trim().min(3, 'Title must be at least 3 characters').max(50, 'Title must be at most 50 characters'),
+  content: Yup.string().trim().max(500, 'Content must be at most 500 characters'),
+  tag: Yup.string().oneOf(tags, 'Select a valid tag').required('Tag is required'),
 });
 
 export function NoteForm({ note, onCancel }: NoteFormProps) {
-  const createMutation = useCreateNote();
-  const updateMutation = useUpdateNote();
-  const mutation = note ? updateMutation : createMutation;
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (payload: NotePayload) => (note ? updateNote(note.id, payload) : createNote(payload)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+    },
+  });
 
   return (
     <Formik
       initialValues={{ title: note?.title ?? '', content: note?.content ?? '', tag: note?.tag ?? '' }}
       validationSchema={schema}
-      onSubmit={async (values: NotePayload, helpers: FormikHelpers<NotePayload>) => {
+      onSubmit={async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
         try {
-          const payload = { title: values.title.trim(), content: values.content.trim(), tag: values.tag.trim() };
-          if (note) await updateMutation.mutateAsync({ id: note.id, payload });
-          else await createMutation.mutateAsync(payload);
+          const payload: NotePayload = { title: values.title.trim(), content: values.content.trim() || undefined, tag: values.tag };
+          await mutation.mutateAsync(payload);
           toast.success(note ? 'Note updated' : 'Note created');
           onCancel();
         } catch (error) {
@@ -48,7 +61,7 @@ export function NoteForm({ note, onCancel }: NoteFormProps) {
               placeholder="Note title"
               aria-invalid={Boolean(touched.title && errors.title)}
             />
-            {touched.title && errors.title && <small>{errors.title}</small>}
+            {touched.title && errors.title && <ErrorMessage>{errors.title}</ErrorMessage>}
           </label>
           <label>
             <span>Content</span>
@@ -61,19 +74,15 @@ export function NoteForm({ note, onCancel }: NoteFormProps) {
               rows={8}
               aria-invalid={Boolean(touched.content && errors.content)}
             />
-            {touched.content && errors.content && <small>{errors.content}</small>}
+            {touched.content && errors.content && <ErrorMessage>{errors.content}</ErrorMessage>}
           </label>
           <label>
             <span>Tag</span>
-            <input
-              name="tag"
-              value={values.tag}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder="e.g. Personal"
-              aria-invalid={Boolean(touched.tag && errors.tag)}
-            />
-            {touched.tag && errors.tag && <small>{errors.tag}</small>}
+            <select name="tag" value={values.tag} onChange={handleChange} onBlur={handleBlur} aria-invalid={Boolean(touched.tag && errors.tag)}>
+              <option value="">Select a tag</option>
+              {tags.map((tag) => <option key={tag} value={tag}>{tag}</option>)}
+            </select>
+            {touched.tag && errors.tag && <ErrorMessage>{errors.tag}</ErrorMessage>}
           </label>
           <div className="form-actions">
             <button type="button" className="button button-secondary" onClick={onCancel}>Cancel</button>
