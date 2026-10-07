@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import { useDebouncedCallback } from 'use-debounce';
-import { useCreateNote, useDeleteNote, useNotes, useUpdateNote } from './hooks/useNotes';
-import type { Note, NotePayload } from './types/note';
-import { Modal } from './components/Modal';
-import { NoteForm } from './components/NoteForm';
-import { NoteList } from './components/NoteList';
-import { Pagination } from './components/Pagination';
+import { useCreateNote, useDeleteNote, useNotes, useUpdateNote } from '../../hooks/useNotes';
+import type { Note, NotePayload } from '../../types/note';
+import { Modal } from '../Modal/Modal';
+import { NoteForm } from '../NoteForm/NoteForm';
+import { NoteList } from '../NoteList/NoteList';
+import { Pagination } from '../Pagination/Pagination';
+import { SearchBox } from '../SearchBox/SearchBox';
 import './App.module.css';
 
 const PER_PAGE = 9;
@@ -79,14 +80,7 @@ export default function App() {
 
       <main>
         <section className="toolbar">
-          <label className="search">
-            <span className="sr-only">Search notes</span>
-            <input
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search notes..."
-            />
-          </label>
+          <SearchBox value={search} onChange={setSearch} />
           <span className="count">{notesQuery.data?.total ?? 0} notes</span>
         </section>
 

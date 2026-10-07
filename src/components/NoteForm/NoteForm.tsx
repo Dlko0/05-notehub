@@ -1,6 +1,6 @@
 import { Formik, type FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import type { Note, NotePayload } from '../types/note';
+import type { Note, NotePayload } from '../../types/note';
 
 interface NoteFormProps {
   note?: Note;

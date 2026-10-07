@@ -1,0 +1,28 @@
+.search {
+  width: min(100%, 480px);
+}
+
+.search input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #dfe1e8;
+  border-radius: 0.8rem;
+  outline: none;
+  background: #fff;
+  color: #252834;
+  transition: border-color 160ms, box-shadow 160ms;
+}
+
+.search input:focus {
+  border-color: #6b62e8;
+  box-shadow: 0 0 0 3px rgba(107, 98, 232, 0.13);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
