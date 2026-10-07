@@ -1,6 +1,7 @@
 import { api } from '../lib/axios';
 import { normalizeNote, normalizeNotesPage } from '../lib/normalize';
-import type { Note, NotePayload, NotesPage, NotesResponse } from '../types/note';
+import type { Note, NotePayload } from '../types/note';
+import type { NotesPage, NotesResponse } from '../types/notesPage';
 
 export async function getNotes(page: number, perPage: number, search = ''): Promise<NotesPage> {
   const response = await api.get<NotesResponse>('/notes', {
@@ -9,7 +10,7 @@ export async function getNotes(page: number, perPage: number, search = ''): Prom
   return normalizeNotesPage(response.data, page, perPage);
 }
 
-export async function getNote(id: string | number): Promise<Note> {
+export async function getNote(id: string): Promise<Note> {
   const response = await api.get<unknown>(`/notes/${id}`);
   return normalizeNote(response.data);
 }
@@ -19,11 +20,12 @@ export async function createNote(payload: NotePayload): Promise<Note> {
   return normalizeNote(response.data);
 }
 
-export async function updateNote(id: string | number, payload: NotePayload): Promise<Note> {
+export async function updateNote(id: string, payload: NotePayload): Promise<Note> {
   const response = await api.put<unknown>(`/notes/${id}`, payload);
   return normalizeNote(response.data);
 }
 
-export async function deleteNote(id: string | number): Promise<void> {
-  await api.delete(`/notes/${id}`);
+export async function deleteNote(id: string): Promise<Note> {
+  const response = await api.delete<unknown>(`/notes/${id}`);
+  return normalizeNote(response.data);
 }

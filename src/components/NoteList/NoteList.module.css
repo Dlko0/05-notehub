@@ -33,11 +33,22 @@
 .open p {
   display: -webkit-box;
   overflow: hidden;
-  margin: 0 0 1rem;
+  margin: 0 0 0.75rem;
   color: #656976;
   line-height: 1.5;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
+}
+
+.tag {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: #eeecff;
+  color: #5e55dc;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .open time {

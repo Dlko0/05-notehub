@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Toaster, toast } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { useDebouncedCallback } from 'use-debounce';
-import { useCreateNote, useDeleteNote, useNotes, useUpdateNote } from '../../hooks/useNotes';
-import type { Note, NotePayload } from '../../types/note';
+import { useNotes } from '../../hooks/useNotes';
+import type { Note } from '../../types/note';
 import { Modal } from '../Modal/Modal';
 import { NoteForm } from '../NoteForm/NoteForm';
 import { NoteList } from '../NoteList/NoteList';
@@ -18,9 +18,6 @@ export default function App() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [modal, setModal] = useState<'create' | 'edit' | null>(null);
   const [selectedNote, setSelectedNote] = useState<Note | undefined>();
-  const createMutation = useCreateNote();
-  const updateMutation = useUpdateNote();
-  const deleteMutation = useDeleteNote();
   const notesQuery = useNotes(page, PER_PAGE, debouncedSearch);
 
   const debouncedSetSearch = useDebouncedCallback((value: string) => {
@@ -47,27 +44,6 @@ export default function App() {
     setSelectedNote(undefined);
   }, []);
 
-  const handleSubmit = async (payload: NotePayload) => {
-    if (modal === 'edit' && selectedNote) {
-      await updateMutation.mutateAsync({ id: selectedNote.id, payload });
-      toast.success('Note updated');
-    } else {
-      await createMutation.mutateAsync(payload);
-      toast.success('Note created');
-    }
-    closeModal();
-  };
-
-  const handleDelete = async (note: Note) => {
-    if (!window.confirm(`Delete “${note.title}”?`)) return;
-    try {
-      await deleteMutation.mutateAsync(note.id);
-      toast.success('Note deleted');
-    } catch {
-      toast.error('Unable to delete note');
-    }
-  };
-
   return (
     <div className="app-shell">
       <header className="topbar">
@@ -85,22 +61,16 @@ export default function App() {
         </section>
 
         {notesQuery.isError && <div className="error">Unable to load notes. Please try again.</div>}
-        <NoteList
-          notes={notesQuery.data?.notes ?? []}
-          loading={notesQuery.isPending}
-          onOpen={openEdit}
-          onDelete={handleDelete}
-        />
-        <Pagination page={notesQuery.data?.page ?? page} totalPages={notesQuery.data?.totalPages ?? 1} onPageChange={setPage} />
+        {notesQuery.data?.notes.length ? (
+          <NoteList notes={notesQuery.data.notes} loading={notesQuery.isPending} onOpen={openEdit} />
+        ) : null}
+        {notesQuery.data && notesQuery.data.totalPages > 1 ? (
+          <Pagination page={notesQuery.data.page} totalPages={notesQuery.data.totalPages} onPageChange={setPage} />
+        ) : null}
       </main>
 
       <Modal open={modal !== null} title={modal === 'edit' ? 'Edit note' : 'Create note'} onClose={closeModal}>
-        <NoteForm
-          note={selectedNote}
-          onSubmit={handleSubmit}
-          isSubmitting={createMutation.isPending || updateMutation.isPending}
-          onCancel={closeModal}
-        />
+        <NoteForm note={selectedNote} onCancel={closeModal} />
       </Modal>
       <Toaster position="top-right" />
     </div>

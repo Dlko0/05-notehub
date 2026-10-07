@@ -13,7 +13,7 @@ export function useNotes(page: number, perPage: number, search: string) {
   });
 }
 
-export function useNote(id: string | number) {
+export function useNote(id: string) {
   return useQuery({
     queryKey: [...NOTES_KEY, id],
     queryFn: () => getNote(id),
@@ -35,7 +35,7 @@ export function useCreateNote() {
 export function useUpdateNote() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string | number; payload: NotePayload }) => updateNote(id, payload),
+    mutationFn: ({ id, payload }: { id: string; payload: NotePayload }) => updateNote(id, payload),
     onSuccess: (_note: Note, variables) => {
       queryClient.invalidateQueries({ queryKey: NOTES_KEY });
       queryClient.invalidateQueries({ queryKey: [...NOTES_KEY, variables.id] });
@@ -47,7 +47,7 @@ export function useDeleteNote() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteNote,
-    onSuccess: (_data, id) => {
+    onSuccess: (_data, id: string) => {
       queryClient.invalidateQueries({ queryKey: NOTES_KEY });
       queryClient.removeQueries({ queryKey: [...NOTES_KEY, id] });
     },

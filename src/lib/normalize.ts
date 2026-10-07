@@ -1,4 +1,5 @@
-import type { Note, NotesPage, NotesResponse } from '../types/note';
+import type { Note } from '../types/note';
+import type { NotesPage, NotesResponse } from '../types/notesPage';
 
 const toNumber = (value: unknown, fallback = 0) => {
   const parsed = Number(value);
@@ -25,13 +26,27 @@ export function normalizeNote(value: unknown): Note {
   const id = note.id ?? note.noteId;
   const title = note.title ?? note.name;
   const content = note.content ?? note.body;
+  const tag = note.tag ?? note.tags ?? '';
   const createdAt = note.createdAt ?? note.created_at ?? note.created;
   const updatedAt = note.updatedAt ?? note.updated_at ?? note.updated;
 
-  if (id === undefined || id === null || typeof title !== 'string' || typeof content !== 'string' || createdAt === undefined) {
+  if (
+    id === undefined ||
+    id === null ||
+    typeof title !== 'string' ||
+    typeof content !== 'string' ||
+    createdAt === undefined ||
+    updatedAt === undefined
+  ) {
     throw new Error('Invalid note response');
   }
 
-  const normalizedId = typeof id === 'number' ? id : String(id);
-  return { id: normalizedId, title, content, createdAt: String(createdAt), updatedAt: updatedAt ? String(updatedAt) : undefined };
+  return {
+    id: String(id),
+    title,
+    content,
+    tag: typeof tag === 'string' ? tag : '',
+    createdAt: String(createdAt),
+    updatedAt: String(updatedAt),
+  };
 }
