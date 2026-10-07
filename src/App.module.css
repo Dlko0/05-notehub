@@ -1,0 +1,169 @@
+.app-shell {
+  min-height: 100vh;
+  padding: 2rem clamp(1rem, 5vw, 5rem);
+  background: #f5f6f9;
+  color: #252834;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1180px;
+  margin: 0 auto 2rem;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  letter-spacing: -0.04em;
+}
+
+.eyebrow {
+  margin: 0 0 0.25rem;
+  color: #777b89;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.search {
+  width: min(100%, 480px);
+}
+
+.search input,
+.note-form input,
+.note-form textarea {
+  width: 100%;
+  border: 1px solid #dfe1e8;
+  border-radius: 0.8rem;
+  outline: none;
+  background: #fff;
+  color: #252834;
+  transition: border-color 160ms, box-shadow 160ms;
+}
+
+.search input {
+  padding: 0.85rem 1rem;
+}
+
+.search input:focus,
+.note-form input:focus,
+.note-form textarea:focus {
+  border-color: #6b62e8;
+  box-shadow: 0 0 0 3px rgba(107, 98, 232, 0.13);
+}
+
+.count {
+  color: #818491;
+  font-size: 0.9rem;
+}
+
+.button {
+  padding: 0.75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.button-primary {
+  background: #5e55dc;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(94, 85, 220, 0.2);
+}
+
+.button-secondary {
+  border-color: #d9dbe3;
+  background: #fff;
+  color: #555a68;
+}
+
+.note-form {
+  display: grid;
+  gap: 1.15rem;
+  padding: 1.5rem;
+}
+
+.note-form label {
+  display: grid;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+
+.note-form input,
+.note-form textarea {
+  padding: 0.8rem;
+  font-weight: 400;
+  resize: vertical;
+}
+
+.note-form small {
+  color: #b23f3f;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.note-form [aria-invalid='true'] {
+  border-color: #c35b5b;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  padding-top: 0.25rem;
+}
+
+.error {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #f0c5c5;
+  border-radius: 0.75rem;
+  background: #fff3f3;
+  color: #a33a3a;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    padding: 1rem;
+  }
+
+  .topbar,
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topbar .button {
+    width: 100%;
+  }
+}

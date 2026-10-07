@@ -1,0 +1,41 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(25, 29, 43, 0.62);
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  width: min(100%, 640px);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  border-radius: 1.25rem;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(20, 23, 35, 0.28);
+}
+
+.modal header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e8eaf0;
+}
+
+.modal h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.close {
+  border: 0;
+  background: transparent;
+  color: #6e7280;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+}
